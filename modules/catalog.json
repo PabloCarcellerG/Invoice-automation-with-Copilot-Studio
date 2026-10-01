@@ -1,0 +1,54 @@
+{
+  "artifactKind": "MODULAR_DESIGN_NOT_IMPLEMENTED_PLUGIN_LOADER",
+  "contractVersion": "1.0",
+  "principle": "Keep three business workflows; compose selected adapters and rule modules inside their extension points",
+  "slots": [
+    {"id": "intake", "workflow": "capture-check", "purpose": "Receive an authorized document or existing invoice"},
+    {"id": "extract", "workflow": "capture-check", "purpose": "Map structured fields or selected extraction output to the same invoice contract"},
+    {"id": "validate", "workflow": "capture-check", "purpose": "Apply customer rules such as PO matching, country tax checks or vendor requirements"},
+    {"id": "approval", "workflow": "resolve-approve", "purpose": "Choose routing, authorized reviewers and approval levels"},
+    {"id": "preflight", "workflow": "register-track", "purpose": "Recheck the current invoice, approval and finance requirements"},
+    {"id": "finance", "workflow": "register-track", "purpose": "Use a selected ERP adapter under the finance operation contract"},
+    {"id": "archive", "workflow": "register-track", "purpose": "Store the confirmed case according to retention policy"}
+  ],
+  "toolOptions": {
+    "extraction": ["structured-fields", "ai-builder", "azure-document-intelligence"],
+    "documentStorage": ["sharepoint", "azure-blob"],
+    "finance": ["none", "dynamics-365", "sap", "other-erp"]
+  },
+  "crossCutting": ["Human review gate", "Customer authorization", "Versioning", "Duplicate protection", "Audit", "Cost budget"],
+  "extensionExamples": [
+    {
+      "id": "po-match",
+      "version": "1.0",
+      "slot": "validate",
+      "requires": ["finance.GetPurchaseOrder", "finance.GetReceipts"],
+      "onDiscrepancy": "REVIEW_REQUIRED",
+      "defaultEnabled": false
+    },
+    {
+      "id": "country-tax-check",
+      "version": "1.0",
+      "slot": "validate",
+      "requires": ["approved-country-rules"],
+      "onDiscrepancy": "REVIEW_REQUIRED",
+      "defaultEnabled": false
+    },
+    {
+      "id": "multi-level-approval",
+      "version": "1.0",
+      "slot": "approval",
+      "requires": ["authority-matrix", "authenticated-decision"],
+      "onDiscrepancy": "REVIEW_REQUIRED",
+      "defaultEnabled": false
+    }
+  ],
+  "extensionRules": [
+    "Implement and register an allowlisted module with a pinned version, contract, owner, dependencies and cost budget",
+    "Enable it only for the relevant customer and selected workflow",
+    "Validate its dependencies and permissions before enabling the workflow; missing capability blocks activation",
+    "Route uncertain or unsupported outcomes to review; never silently skip required checks",
+    "Plugins cannot bypass mandatory controls or grant authority to the agent",
+    "Switch providers at a controlled boundary; never replay a finance write merely because its adapter changed"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "demo_only": true,
+  "max_post_attempts": 3,
+  "customers": {
+    "demo-customer": {
+      "legal_entities": {
+        "DEMO-ES": {
+          "buyer_id": "SYNTHETIC-BUYER-ES",
+          "currency": "EUR",
+          "critical_confidence_threshold": "0.98",
+          "approval_max_age_hours": 24,
+          "preparers": ["preparer-demo"],
+          "approvers": {
+            "approver-demo": {"EUR": "1000.00"}
+          },
+          "purchase_orders": {
+            "PO-DEMO-001": {
+              "supplier_id": "SUPPLIER-DEMO",
+              "currency": "EUR",
+              "lines": {
+                "10": {"quantity": "2", "received_quantity": "2", "unit_price": "25.00"},
+                "20": {"quantity": "3", "received_quantity": "3", "unit_price": "0.10"}
+              }
+            },
+            "PO-DEMO-002": {
+              "supplier_id": "SUPPLIER-DEMO",
+              "currency": "EUR",
+              "lines": {
+                "10": {"quantity": "2", "received_quantity": "2", "unit_price": "25.00"},
+                "20": {"quantity": "3", "received_quantity": "3", "unit_price": "0.10"}
+              }
+            },
+            "PO-DEMO-003": {
+              "supplier_id": "SUPPLIER-DEMO",
+              "currency": "EUR",
+              "lines": {
+                "10": {"quantity": "2", "received_quantity": "2", "unit_price": "25.00"},
+                "20": {"quantity": "3", "received_quantity": "3", "unit_price": "0.10"}
+              }
+            },
+            "PO-DEMO-004": {
+              "supplier_id": "SUPPLIER-DEMO",
+              "currency": "EUR",
+              "lines": {
+                "10": {"quantity": "2", "received_quantity": "2", "unit_price": "25.00"},
+                "20": {"quantity": "3", "received_quantity": "3", "unit_price": "0.10"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

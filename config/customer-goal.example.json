@@ -1,0 +1,36 @@
+{
+  "artifactKind": "DESIGN_CONFIGURATION_NOT_RUNTIME_AUTHORIZATION",
+  "customerAlias": "example-customer",
+  "goal": "capture",
+  "enabledWorkflows": ["capture-check"],
+  "inputChannel": "existing-shared-mailbox",
+  "invoiceRecordStore": "customer-dataverse",
+  "toolChoices": {
+    "extraction": "ai-builder",
+    "documentStorage": "sharepoint",
+    "finance": "none"
+  },
+  "extensions": [],
+  "availableCapabilities": [],
+  "humanReview": {
+    "enabled": true,
+    "queue": "customer-invoice-review",
+    "triggers": ["LOW_CONFIDENCE", "UNUSUAL_AMOUNT", "DUPLICATE_CANDIDATE", "BUYER_OR_SUPPLIER_MISMATCH", "TOTAL_MISMATCH", "SUSPECTED_FRAUD", "UNSUPPORTED_CASE", "OUTCOME_UNKNOWN"],
+    "missingOwner": "BLOCK_AND_ESCALATE",
+    "timeoutAction": "ESCALATE_WITHOUT_APPROVING",
+    "resumePolicy": "AUTHORIZED_DECISION_THEN_REVALIDATE",
+    "materialChangeInvalidatesApproval": true,
+    "allowsUnknownOutcomeRetry": false
+  },
+  "optionalAzureCostGate": {
+    "requiredBeforeSelection": true,
+    "comparisonReference": null,
+    "compare": ["Processing price and extraction quality", "Storage, retrieval and retention", "Integration and network access", "Support and review effort"],
+    "claim": "Select Azure tools only when customer-specific total cost is lower at acceptable quality; savings are not guaranteed"
+  },
+  "approvalPolicyReference": "configure-before-enabling-approvals",
+  "agentMaxToolCallsPerRequest": 6,
+  "monthlyCostBudget": {"currency": "EUR", "amount": "SET_WITH_CUSTOMER"},
+  "successMetric": "Manual minutes per invoice",
+  "note": "Design template only, not loaded by the Python demo. Azure, SAP and other ERP adapters require customer-specific implementation and supported connections; this file grants no access."
+}

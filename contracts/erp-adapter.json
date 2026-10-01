@@ -1,0 +1,38 @@
+{
+  "artifactKind": "PRODUCTION_DESIGN_CONTRACT_NOT_IMPLEMENTED",
+  "version": "0.1.0",
+  "adapterChoices": [
+    {"id": "dynamics-365", "status": "Customer-specific API/connector and transaction behavior must be implemented"},
+    {"id": "sap", "status": "Optional; validate SAP version, supported API/connector, gateway requirements, authentication and commit semantics"},
+    {"id": "other-erp", "status": "Optional; implement the same contract for a supported customer ERP"}
+  ],
+  "capabilityGate": "Do not enable automatic registration until the selected adapter proves unique-reference behavior, reliable outcome lookup and permission enforcement",
+  "context": ["customerScopeFromIdentity","legalEntityFromAuthorization","correlationId"],
+  "operations": [
+    {"name":"GetSupplier","input":["supplierId"],"output":["status","taxIdentifiers","approvedPayeeReference","masterVersion"]},
+    {"name":"GetPurchaseOrder","input":["purchaseOrderId"],"output":["lines","currency","openQuantities","dimensions","version"]},
+    {"name":"GetReceipts","input":["purchaseOrderId"],"output":["receiptLines","reversals","serviceAcceptance","asOf"]},
+    {"name":"Preflight","input":["invoiceVersion","approvalSet","policyVersion"],"output":["allowed","reasonCodes","period","masterVersions"]},
+    {"name":"CreateDraft","input":["externalReference","invoiceVersion","payloadHash"],"output":["erpDraftId","state"]},
+    {"name":"PostDraft","input":["externalReference","erpDraftId","expectedVersion"],"output":["erpReference","state","accountedAt"]},
+    {"name":"LookupByExternalReference","input":["externalReference"],"output":["NOT_FOUND_AUTHORITATIVE|FOUND_DRAFT|FOUND_POSTED|AMBIGUOUS|UNKNOWN","records","consistencyEvidence"]},
+    {"name":"GetPaymentStatus","input":["erpReference"],"output":["unpaid|partially_paid|fully_paid|reversed","paymentEvents","currency"]}
+  ],
+  "failureClasses": {
+    "BUSINESS_REJECTION":"Do not retry without correcting and revalidating the business case",
+    "TRANSIENT_BEFORE_COMMIT":"Retry only if the adapter can prove no commit and reuse the same reference",
+    "OUTCOME_UNKNOWN":"Persist unknown state and reconcile; never blind retry",
+    "AUTH_CONFIGURATION":"Alert integration owner; retries alone will not fix credentials",
+    "THROTTLED":"Respect Retry-After and adapter-specific concurrency, preserving idempotency"
+  },
+  "invariants": [
+    "No create/post tool is exposed directly to the model",
+    "Unresolved human-review cases block new posting; reviewer release still requires fresh preflight and valid approval",
+    "External reference is unique per posting intent and customer/entity",
+    "Same external reference with a different payload is a conflict",
+    "NOT_FOUND is not proof of noncommit with an eventually consistent API",
+    "ERP draft creation, posting, accounting and payment are separate capabilities",
+    "Posted documents are corrected using ERP-approved credit/reversal procedures, not deletion",
+    "If the ERP cannot enforce uniqueness or authoritative lookup, disable autonomous posting"
+  ]
+}

@@ -1,0 +1,15 @@
+[project]
+name = "invoice-automation-local-demo"
+version = "0.1.0"
+description = "Synthetic, local-only invoice/AP state machine with durable SQLite mock ERP"
+requires-python = ">=3.11"
+dependencies = []
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+]
+
+[project.scripts]
+invoice-accelerator = "invoice_accelerator.__main__:main"
+
+# Source execution is intentional: set PYTHONPATH=src; no install/build backend is required.

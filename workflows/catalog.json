@@ -1,0 +1,63 @@
+{
+  "artifactKind": "DESIGN_ONLY_NOT_IMPORTABLE",
+  "version": "0.3.0",
+  "executionTarget": "Copilot Studio new workflows with the GitHub Copilot harness",
+  "selectionRule": "These are optional modules, not a fixed process. Choose zero, one, two or three for the customer goal.",
+  "commonContract": {
+    "identity": "Customer and legal-entity scope come from authenticated, authorized connections",
+    "state": "Persist invoice version, state, owner and correlation ID outside the conversation",
+    "control": "Enforce permissions, duplicate protection and approvals in the connected operation; a prompt is not authorization",
+    "cost": "Reuse existing structured data; select Azure extraction/storage only after comparing total customer cost",
+    "extensionCatalog": "modules/catalog.json",
+    "moduleContract": "contracts/module-contract.json",
+    "humanReview": "Every selected workflow can pause at REVIEW_REQUIRED. Assign an owner, obtain an authorized decision and revalidate before resuming. Do not require the entire approval workflow merely to provide an exception-review gate.",
+    "unknownFinanceOutcome": "Pause dependent actions and reconcile; a human decision does not authorize a blind retry"
+  },
+  "workflows": [
+    {
+      "id": "capture-check",
+      "name": "Capture and check",
+      "goal": "Reduce invoice entry effort",
+      "trigger": "New invoice from a configured email, document library or upload",
+      "steps": ["Register the original once", "Use structured fields or the selected extraction adapter", "Run required and customer-selected validation modules", "Pause unusual or uncertain invoices for an assigned human reviewer", "Revalidate corrected data before creating a ready invoice"],
+      "extensionPoints": ["intake", "extract", "validate"],
+      "humanReviewGate": "shared",
+      "persists": ["Original reference", "Invoice record and version", "Duplicate key", "Review reason"],
+      "errors": ["UNREADABLE", "WRONG_BUYER", "DUPLICATE_CANDIDATE", "FIELDS_NEED_REVIEW", "UNUSUAL_AMOUNT", "SUSPECTED_FRAUD"],
+      "owner": "Invoice operations",
+      "prerequisites": ["Authorized source connection", "Invoice record store", "Extraction tool only for unstructured documents"],
+      "valueMetric": "Manual minutes per invoice",
+      "mainCostDriver": "Documents requiring extraction and correction"
+    },
+    {
+      "id": "resolve-approve",
+      "name": "Resolve and approve",
+      "goal": "Reduce approval delays and follow-up work",
+      "trigger": "A normalized invoice requires correction or approval",
+      "steps": ["Run the customer's routing and approval modules", "Pause anomalies and let the agent explain the blocker when useful", "Collect an authenticated human decision", "Record authority and invoice version; invalidate approvals and revalidate after material changes"],
+      "extensionPoints": ["approval"],
+      "humanReviewGate": "shared",
+      "persists": ["Review task", "Approval decision", "Version and policy", "Owner and due date"],
+      "errors": ["OWNER_MISSING", "SELF_APPROVAL", "LIMIT_EXCEEDED", "STALE_VERSION"],
+      "owner": "Business approver and invoice operations",
+      "prerequisites": ["Normalized invoice from Capture and check OR the customer's existing process", "Approval policy", "Authorized decision-recording tool"],
+      "valueMetric": "Approval waiting time and follow-up touches",
+      "mainCostDriver": "Exceptions, reminders and agent interactions"
+    },
+    {
+      "id": "register-track",
+      "name": "Register and track",
+      "goal": "Reduce finance hand-off effort and make outcomes visible",
+      "trigger": "An invoice is approved under the customer's policy",
+      "steps": ["Run preflight modules and block unresolved review cases", "Reserve a unique submission reference", "Invoke the selected Dynamics 365, SAP or other ERP adapter", "Confirm the result; route unknown outcomes to reconciliation and human oversight", "Run the configured archive step without repeating confirmed financial writes"],
+      "extensionPoints": ["preflight", "finance", "archive"],
+      "humanReviewGate": "shared",
+      "persists": ["Submission intent", "Finance reference", "Confirmed or unknown result", "Final status"],
+      "errors": ["APPROVAL_INVALID", "PERIOD_CLOSED", "FINANCE_REJECTED", "OUTCOME_UNKNOWN"],
+      "owner": "Finance operations",
+      "prerequisites": ["Approved invoice from Resolve and approve OR an authorized existing process", "Finance connection with unique reference and reliable outcome lookup"],
+      "valueMetric": "Handling time through confirmed registration",
+      "mainCostDriver": "Finance integration and reconciliation effort"
+    }
+  ]
+}

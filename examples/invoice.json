@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "customer_id": "demo-customer",
+  "legal_entity_id": "DEMO-ES",
+  "source": {
+    "transport": "synthetic-file-drop",
+    "event_id": "example-event-001",
+    "reference": "synthetic://illustrative-invoice-001",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "invoice": {
+    "supplier_id": "SUPPLIER-DEMO",
+    "buyer_id": "SYNTHETIC-BUYER-ES",
+    "invoice_number": "INV-0001",
+    "invoice_series": "SYN-2026",
+    "document_type": "PO_INVOICE",
+    "currency": "EUR",
+    "invoice_date": "2026-09-30",
+    "purchase_order_id": "PO-DEMO-001",
+    "tax_treatment": "NO_TAX",
+    "tax_amount": "0.00",
+    "subtotal_amount": "50.30",
+    "total_amount": "50.30",
+    "lines": [
+      {"line_number": "10", "quantity": "2", "unit_price": "25.00", "line_amount": "50.00"},
+      {"line_number": "20", "quantity": "3", "unit_price": "0.10", "line_amount": "0.30"}
+    ]
+  },
+  "evidence": {
+    "/invoice/supplier_id": {"confidence": "0.99", "page": 1, "source_span": "synthetic:supplier"},
+    "/invoice/buyer_id": {"confidence": "0.99", "page": 1, "source_span": "synthetic:buyer"},
+    "/invoice/invoice_number": {"confidence": "0.99", "page": 1, "source_span": "synthetic:number"},
+    "/invoice/invoice_series": {"confidence": "0.99", "page": 1, "source_span": "synthetic:series"},
+    "/invoice/document_type": {"confidence": "0.99", "page": 1, "source_span": "synthetic:type"},
+    "/invoice/currency": {"confidence": "0.99", "page": 1, "source_span": "synthetic:currency"},
+    "/invoice/invoice_date": {"confidence": "0.99", "page": 1, "source_span": "synthetic:date"},
+    "/invoice/purchase_order_id": {"confidence": "0.99", "page": 1, "source_span": "synthetic:po"},
+    "/invoice/tax_treatment": {"confidence": "0.99", "page": 1, "source_span": "synthetic:tax-treatment"},
+    "/invoice/tax_amount": {"confidence": "0.99", "page": 1, "source_span": "synthetic:tax"},
+    "/invoice/subtotal_amount": {"confidence": "0.99", "page": 1, "source_span": "synthetic:subtotal"},
+    "/invoice/total_amount": {"confidence": "0.99", "page": 1, "source_span": "synthetic:total"},
+    "/invoice/lines/0/line_number": {"confidence": "0.99", "page": 1, "source_span": "synthetic:line-10-number"},
+    "/invoice/lines/0/quantity": {"confidence": "0.99", "page": 1, "source_span": "synthetic:line-10-quantity"},
+    "/invoice/lines/0/unit_price": {"confidence": "0.99", "page": 1, "source_span": "synthetic:line-10-price"},
+    "/invoice/lines/0/line_amount": {"confidence": "0.99", "page": 1, "source_span": "synthetic:line-10-amount"},
+    "/invoice/lines/1/line_number": {"confidence": "0.99", "page": 1, "source_span": "synthetic:line-20-number"},
+    "/invoice/lines/1/quantity": {"confidence": "0.99", "page": 1, "source_span": "synthetic:line-20-quantity"},
+    "/invoice/lines/1/unit_price": {"confidence": "0.99", "page": 1, "source_span": "synthetic:line-20-price"},
+    "/invoice/lines/1/line_amount": {"confidence": "0.99", "page": 1, "source_span": "synthetic:line-20-amount"}
+  }
+}

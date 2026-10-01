@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Invoice Assistant | Copilot Studio</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cp-bg);color:var(--cp-text);font:16px/1.55 "Segoe UI",Aptos,Calibri,-apple-system,BlinkMacSystemFont,sans-serif}
+header,main,footer{max-width:1320px;margin:auto;padding:28px}
+h1{font-size:clamp(2.1rem,4vw,3.6rem);line-height:1.08;margin:16px 0}
+h2{font-size:1.75rem;margin:0 0 16px}
+h3{font-size:1.15rem;margin:0 0 8px}
+p{margin:12px 0}
+.lead{font-size:1.2rem;max-width:920px}
+.tag{font-weight:700;color:var(--cp-accent)}
+.muted,small{color:var(--cp-text-muted)}
+section{margin:0 0 24px;padding:28px;border:1px solid var(--cp-border);border-radius:16px;background:var(--cp-surface)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{padding:20px;border:1px solid var(--cp-border);border-radius:16px;background:var(--cp-bg-elevated)}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+nav a{padding:8px 12px;border:1px solid var(--cp-border);border-radius:.625rem;text-decoration:none;color:var(--cp-text);background:var(--cp-surface)}
+a{color:var(--cp-link)}
+.notice{border-left:4px solid var(--cp-accent);background:var(--cp-accent-soft);padding:16px;border-radius:.625rem;margin:16px 0}
+.table{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+td,th{padding:12px;text-align:left;border-bottom:1px solid var(--cp-border);vertical-align:top}
+th{background:var(--cp-surface-soft)}
+.architecture{width:100%;height:auto;border-radius:.625rem;border:1px solid var(--cp-border)}
+label{display:block}
+input,select,button{font:inherit;padding:10px;border:1px solid var(--cp-border-strong);border-radius:.625rem;color:var(--cp-text);background:var(--cp-surface)}
+input{width:100%;display:block;margin-top:4px}
+select{max-width:100%}
+button{cursor:pointer;background:var(--cp-accent);color:var(--cp-accent-fg);border-color:var(--cp-accent);margin-top:16px}
+button:hover{background:var(--cp-accent-hover)}
+output{display:block;margin-top:16px;font-weight:600}
+code{font-family:Consolas,"Courier New",Courier,monospace;background:var(--cp-surface-soft);padding:2px 4px;border-radius:4px}
+li{margin:10px 0}
+details{padding:16px;border:1px solid var(--cp-border);border-radius:.625rem;margin-top:16px}
+summary{font-weight:600;cursor:pointer}
+@media(max-width:600px){header,main,footer{padding:16px}section{padding:18px}}
+@media print{nav,form{display:none}body{background:var(--cp-surface)}section{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+<div class="tag">COPILOT STUDIO &middot; NEW GITHUB COPILOT HARNESS</div>
+<h1>Invoice automation.<br>Built around the customer's goal.</h1>
+<p class="lead">One invoice agent. Three composable workflows. Add customer-specific tools and rules, keep people in control of unusual cases, and expand only when the value justifies the cost.</p>
+<nav aria-label="Contents"><a href="#goal">Customer goal</a><a href="#architecture">Architecture</a><a href="#workflows">Workflows</a><a href="#value">Value and cost</a></nav>
+</header>
+<main>
+<section id="goal">
+<h2>1. Choose the outcome, not a fixed process</h2>
+<label for="goal-choice">What should improve first?</label>
+<select id="goal-choice">
+<option value="visibility">Faster answers about invoice status</option>
+<option value="capture" selected>Less manual invoice entry</option>
+<option value="approvals">Faster approvals</option>
+<option value="end_to_end">Less handling from receipt to registration</option>
+</select>
+<div class="notice" id="goal-result" aria-live="polite">Start with the agent + Capture and check. Measure manual minutes per invoice. Main cost driver: documents requiring extraction and correction.</div>
+<p>Keep the customer's working processes. An approval-only solution can use invoices already captured elsewhere; it does not need a new intake workflow. A visibility-only assistant needs no write workflow.</p>
+</section>
+<section id="architecture">
+<h2>2. One Copilot Studio solution</h2>
+<img class="architecture" alt="Modular Copilot Studio architecture: one agent, three optional workflows, human review, optional Azure extraction and storage, and Dynamics 365, SAP or other ERP adapters." src="data:image/svg+xml;base64,@@ARCHITECTURE@@">
+<p><strong>The agent</strong> understands requests, explains blockers and finds the next action. <strong>Workflows</strong> carry out the selected business steps using authorized tools. All orchestration stays in Copilot Studio; connected tools supply records, documents and finance actions.</p>
+<p><strong>Connected tools:</strong> AI Builder for extraction, or optional <strong>Azure Document Intelligence</strong>; SharePoint for documents, or optional <strong>Azure Blob Storage</strong>. Dataverse retains invoice status and decisions. Azure is a potential cost option, not a guaranteed saving or a replacement for Copilot Studio orchestration.</p>
+<p><strong>Customer finance:</strong> choose a Dynamics 365, <strong>SAP</strong> or other ERP adapter. Reuse the same workflow contract; configure the customer's supported API/connector, permissions and reliable submission-status lookup.</p>
+</section>
+<section id="workflows">
+<h2>3. Pick the workflow building blocks</h2>
+<div class="grid">
+<article class="card"><h3>Capture and check</h3><p>Read invoice fields, check required data and duplicates, then create a ready invoice or a review task.</p><p><strong>Value:</strong> less rekeying.<br><strong>Use when:</strong> intake is the bottleneck.</p></article>
+<article class="card"><h3>Resolve and approve</h3><p>Explain a blocker, route to the right person and record the authorized decision against the current invoice version.</p><p><strong>Value:</strong> less chasing.<br><strong>Use when:</strong> approvals cause delays.</p></article>
+<article class="card"><h3>Register and track</h3><p>Send an approved invoice through the finance tool and confirm the result. Check an unknown result before repeating a submission.</p><p><strong>Value:</strong> less hand-off effort.<br><strong>Use when:</strong> registration is still manual.</p></article>
+</div>
+<p><strong>Always keep:</strong> customer-specific access, duplicate protection for submissions and valid approval for financial writes. The agent never executes payments or changes supplier bank details.</p>
+<div class="notice"><strong>Human in the loop, at any stage.</strong> Uncertain fields, unusual amounts, mismatches, duplicate/fraud flags or unsupported cases pause the affected automation. An assigned person corrects, rejects or escalates. Resume only after revalidation; material changes need approval again. Overdue cases escalate, never auto-approve. An unknown ERP result must be reconciled before another submission.</div>
+<h3>More requirements? Extend a step, not the whole solution.</h3>
+<p>The reusable core exposes extension points for <strong>intake, extraction, validation, approval, finance and archiving</strong>. Add a PO check, country rule or extra approval level as a versioned module; swap an ERP or extraction adapter without redesigning the three workflows. Each customer pack selects modules, rules, reviewers and budget. New modules still need implementation and dependency checks.</p>
+</section>
+<section id="value">
+<h2>4. Make the value and cost visible</h2>
+<div class="table"><table><thead><tr><th>Customer value</th><th>Measure</th><th>Control cost</th></tr></thead><tbody>
+<tr><td>Less manual work</td><td>Minutes spent per invoice</td><td>Reuse structured fields; extract only when needed.</td></tr>
+<tr><td>Faster decisions</td><td>Approval waiting time and follow-ups</td><td>Use the agent for useful interactions, not every step.</td></tr>
+<tr><td>Predictable operation</td><td>Cost per confirmed invoice and unresolved cases</td><td>Start with one goal; cap tool usage and review exceptions.</td></tr>
+</tbody></table></div>
+<p><strong>Monthly solution cost:</strong> Copilot Credits + selected tool/document processing + storage/retrieval + human review + support. Add one-time implementation effort. Include build/test usage; use the customer's actual rates, not an assumed subscription entitlement.</p>
+<p><strong>Azure cost gate:</strong> compare equivalent extraction quality, expected document volume, retention/retrieval, integration and support. Choose the optional Azure tools only when that customer's total cost is lower. Keep human-review effort in the comparison; cheaper extraction that causes more corrections may cost more overall.</p>
+<details>
+<summary>Estimate handling value and payback</summary>
+<p class="muted">Illustrative EUR assumptions, not product pricing or guaranteed cash savings. Include all licenses, credits, tools, storage and support in monthly cost. Include human review in target handling minutes; do not count it twice.</p>
+<form id="cost-form">
+<div class="grid">
+<label>Invoices per month<input id="n" type="number" min="1" step="1" value="5000" required></label>
+<label>Current handling minutes/invoice<input id="before" type="number" min="0" step="0.1" value="8" required></label>
+<label>Target handling minutes/invoice<input id="after" type="number" min="0" step="0.1" value="3" required></label>
+<label>Fully loaded labor cost, EUR/hour<input id="hour" type="number" min="0" step="0.01" value="40" required></label>
+<label>Total incremental solution cost, EUR/month<input id="monthly" type="number" min="0" step="0.01" value="2000" required></label>
+<label>One-time implementation, EUR<input id="setup" type="number" min="0" step="0.01" value="15000" required></label>
+</div>
+<button type="submit">Calculate illustrative value</button>
+<output id="cost-output" aria-live="polite">Adjust the assumptions to the customer's baseline and quote.</output>
+</form>
+</details>
+<p><strong>Delivery:</strong> one business owner, one Copilot Studio builder and access to a finance-system specialist. Start with one customer entity and representative invoices; expand after the selected metric improves.</p>
+</section>
+</main>
+<footer><strong>Invoice Assistant &middot; v0.3.0</strong><p class="muted">Copilot Studio orchestration. Optional tools and ERP adapters. Human control. Reusable modules. Icon usage terms are included in the repository.</p></footer>
+<script>
+const GOALS = {
+  visibility: "Start with the agent and read-only status tools. No write workflow. Measure time spent finding answers. Main cost driver: agent interactions.",
+  capture: "Start with the agent + Capture and check. Measure manual minutes per invoice. Main cost driver: documents requiring extraction and correction.",
+  approvals: "Start with the agent + Resolve and approve, using existing invoice records. Measure approval waiting time and follow-ups. Main cost driver: exceptions and interactions.",
+  end_to_end: "Combine all three workflows only where the customer needs the full path. Measure cost per confirmed invoice. Main cost driver: document processing, integration and exception handling."
+};
+document.getElementById("goal-choice").addEventListener("change", event => {
+  document.getElementById("goal-result").textContent = GOALS[event.target.value];
+});
+document.getElementById("cost-form").addEventListener("submit", event => {
+  event.preventDefault();
+  if (!event.currentTarget.reportValidity()) return;
+  const values = ["n","before","after","hour","monthly","setup"].map(id => Number(document.getElementById(id).value));
+  const out = document.getElementById("cost-output");
+  if (values.some(v => !Number.isFinite(v) || v < 0) || values[0] < 1) {
+    out.textContent = "Enter finite, non-negative values and at least one invoice.";
+    return;
+  }
+  const [n,before,after,hour,monthly,setup] = values;
+  const hours = n * (before - after) / 60;
+  const net = hours * hour - monthly;
+  const euro = new Intl.NumberFormat("en-IE", {style:"currency",currency:"EUR",maximumFractionDigits:0});
+  const payback = net > 0 ? (setup/net).toFixed(1) + " months" : "no positive payback under these assumptions";
+  out.textContent = hours.toFixed(1) + " handling hours released/month; " + euro.format(net) +
+    " net monthly capacity value after running cost; illustrative payback: " + payback +
+    ". Hours released are not automatically cash savings.";
+});
+</script>
+</body>
+</html>

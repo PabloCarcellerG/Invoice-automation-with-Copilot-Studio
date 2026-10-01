@@ -1,0 +1,27 @@
+{
+  "artifactKind": "PRODUCTION_DESIGN_CONTRACT_NOT_IMPLEMENTED",
+  "contractVersion": "1.0",
+  "input": ["authorizedCustomerScope", "invoiceId", "invoiceVersion", "correlationId", "policyVersion", "moduleId", "moduleVersion", "permittedDataReferences"],
+  "output": {
+    "decision": ["PASS", "REVIEW_REQUIRED", "REJECT", "ERROR"],
+    "required": ["decision", "reasonCodes", "invoiceVersion", "moduleVersion"],
+    "optional": ["proposedChanges", "reviewQueue", "usageUnits", "resultReferences"],
+    "meaning": "PASS completes only this module. It does not confer financial approval or prove an ERP posting."
+  },
+  "reviewGate": {
+    "state": "REVIEW_REQUIRED",
+    "blocks": "Dependent automated writes while an unresolved review reason exists",
+    "caseFields": ["invoiceVersion", "reasonCodes", "ownerQueue", "dueAt", "resumeCheckpoint"],
+    "decisions": ["CORRECT", "REJECT", "ESCALATE", "RELEASE_FOR_REVALIDATION"],
+    "resume": "Require an authorized signed-in reviewer; revalidate the current version and all required controls; material changes invalidate approvals",
+    "timeout": "Escalate or remain paused, never auto-approve",
+    "unknownFinanceOutcome": "Keep the posting outcome unknown until authoritative reconciliation; a reviewer cannot approve a blind retry"
+  },
+  "safety": [
+    "Documents and module outputs do not supply authorization",
+    "Only allowlisted, pinned modules run; never execute code locations supplied by an invoice",
+    "Malformed, missing or incompatible output blocks processing and creates an owned incident",
+    "Financial side effects use the separate ERP adapter contract and immutable submission key",
+    "Archive or notification failure after confirmed posting must not repeat that posting"
+  ]
+}

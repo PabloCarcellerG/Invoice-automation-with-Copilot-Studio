@@ -1,0 +1,27 @@
+{
+  "artifactKind": "DESIGN_ONLY_NOT_COPILOT_EXPORT",
+  "targetHarness": "GitHub Copilot harness in Copilot Studio",
+  "topology": "One invoice agent; enable tools and optional workflows for the customer's goal",
+  "extensionCatalog": "modules/catalog.json",
+  "moduleContract": "contracts/module-contract.json",
+  "humanReviewPolicy": "Unusual or uncertain cases pause dependent automated writes; authorized humans correct, reject or escalate, then required controls revalidate before resume",
+  "goals": {
+    "visibility": {"workflows": [], "value": "Faster answers without changing the finance process"},
+    "capture": {"workflows": ["capture-check"], "value": "Less manual invoice entry"},
+    "approvals": {"workflows": ["resolve-approve"], "value": "Shorter approval waiting time"},
+    "end_to_end": {"workflows": ["capture-check", "resolve-approve", "register-track"], "value": "Less handling from receipt to confirmed finance registration"}
+  },
+  "tools": [
+    {"name": "GetInvoiceStatus", "effect": "read", "input": ["invoiceId"]},
+    {"name": "GetInvoiceEvidence", "effect": "read", "input": ["invoiceId", "fieldNames"]},
+    {"name": "GetMatchingContext", "effect": "read", "input": ["invoiceId"]},
+    {"name": "SearchApprovedPolicy", "effect": "read", "input": ["question"]},
+    {"name": "SubmitInvoiceJob", "effect": "start_configured_capture_only", "input": ["documentId", "legalEntityId"], "optional": true},
+    {"name": "ProposeCorrection", "effect": "create_review_proposal_only", "input": ["invoiceId", "expectedVersion", "changes", "evidenceIds"], "optional": true},
+    {"name": "OpenReviewTask", "effect": "create_internal_task", "input": ["invoiceId", "reasonCode", "expectedVersion"], "optional": true}
+  ],
+  "workflowOnlyCapabilities": ["Record authenticated approval decisions", "Register approved invoices", "Reconcile unknown finance outcomes"],
+  "forbiddenCapabilities": ["Execute payment", "Change supplier bank", "Model-issued approval", "Unrestricted code or HTTP", "Cross-customer access"],
+  "costPolicy": "Read before reprocessing; invoke AI only where useful; cap calls per case; choose optional Azure tools only after a customer-specific total-cost comparison",
+  "deploymentNote": "Configure in the new Copilot Studio experience; this design JSON is not an import package"
+}

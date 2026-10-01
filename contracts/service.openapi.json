@@ -1,0 +1,66 @@
+{
+  "openapi":"3.0.3",
+  "info":{"title":"Invoice accelerator - production API design","version":"0.1.0","description":"DESIGN ONLY. No HTTP server or authentication implementation is included. Implement and review before exposing tools; adapt to the target connector's supported OpenAPI version."},
+  "servers":[{"url":"https://replace-with-customer-api.example.invalid"}],
+  "security":[{"entraBearer":[]}],
+  "paths":{
+    "/invoice-jobs":{
+      "post":{
+        "operationId":"SubmitInvoiceJob",
+        "description":"Scope comes from validated identity, never a caller-supplied tenant ID. Register an already authorized captured document; return after durable storage.",
+        "parameters":[{"name":"Idempotency-Key","in":"header","required":true,"schema":{"type":"string","maxLength":128}}],
+        "requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","additionalProperties":false,"required":["documentId","legalEntityId"],"properties":{"documentId":{"type":"string"},"legalEntityId":{"type":"string","description":"Must be authorized for the identity, not trusted from model input"}}}}}},
+        "responses":{"202":{"description":"Durably accepted, not posted","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Job"}}}},"400":{"description":"Invalid request"},"401":{"description":"Unauthenticated"},"403":{"description":"Scope denied"},"409":{"description":"Idempotency key payload conflict"},"429":{"description":"Throttled"}}
+      }
+    },
+    "/invoice-jobs/{jobId}":{
+      "parameters":[{"name":"jobId","in":"path","required":true,"schema":{"type":"string"}}],
+      "get":{"operationId":"GetInvoiceJobStatus","description":"Perform object-level authorization even with an unguessable identifier; conceal foreign objects.","responses":{"200":{"description":"Authorized job status","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Job"}}}},"401":{"description":"Unauthenticated"},"404":{"description":"Missing or inaccessible"}}}
+    },
+    "/invoices/{invoiceId}":{
+      "parameters":[{"name":"invoiceId","in":"path","required":true,"schema":{"type":"string"}}],
+      "get":{"operationId":"GetInvoiceStatus","description":"Resolve an authorized invoice to its current processing job and business state.","responses":{"200":{"description":"Authorized current invoice status","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Job"}}}},"401":{"description":"Unauthenticated"},"404":{"description":"Missing or inaccessible"}}}
+    },
+    "/invoices/{invoiceId}/correction-proposals":{
+      "parameters":[{"name":"invoiceId","in":"path","required":true,"schema":{"type":"string"}}],
+      "post":{
+        "operationId":"ProposeCorrection",
+        "description":"Creates a proposal only; does not mutate an approved invoice or confer approval.",
+        "requestBody":{
+          "required":true,
+          "content":{
+            "application/json":{
+              "schema":{
+                "type":"object",
+                "additionalProperties":false,
+                "required":["expectedVersion","changes","evidenceIds"],
+                "properties":{
+                  "expectedVersion":{"type":"integer","minimum":1},
+                  "changes":{
+                    "type":"array",
+                    "minItems":1,
+                    "items":{
+                      "type":"object",
+                      "additionalProperties":false,
+                      "required":["field","proposedValue"],
+                      "properties":{
+                        "field":{"type":"string","enum":["costCenter","purchaseOrderReference","description"]},
+                        "proposedValue":{"type":"string","maxLength":1000}
+                      }
+                    }
+                  },
+                  "evidenceIds":{"type":"array","minItems":1,"items":{"type":"string"}}
+                }
+              }
+            }
+          }
+        },
+        "responses":{"201":{"description":"Review proposal persisted"},"400":{"description":"Invalid or forbidden change"},"401":{"description":"Unauthenticated"},"404":{"description":"Missing or inaccessible"},"409":{"description":"Stale invoice version"}}
+      }
+    }
+  },
+  "components":{
+    "securitySchemes":{"entraBearer":{"type":"http","scheme":"bearer","bearerFormat":"JWT","description":"Validate signature, issuer, audience, expiry, permissions and customer/entity membership server-side."}},
+    "schemas":{"Job":{"type":"object","required":["jobId","state","invoiceVersion"],"properties":{"jobId":{"type":"string"},"invoiceId":{"type":"string","nullable":true},"state":{"type":"string","description":"Production case state; not proof of payment"},"invoiceVersion":{"type":"integer","minimum":1},"erpReference":{"type":"string","nullable":true},"exceptionCodes":{"type":"array","items":{"type":"string"}}}}}
+  }
+}
