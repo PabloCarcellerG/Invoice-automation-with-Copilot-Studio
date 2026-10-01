@@ -30,9 +30,6 @@ Open ``docs/index.html`` for the short solution guide, tool-icon architecture,
 value/cost calculator and setup instructions. The editable diagram is
 ``docs/architecture.excalidraw``.
 
-Architecture
--------------
-
 What to reuse
 -------------
 
