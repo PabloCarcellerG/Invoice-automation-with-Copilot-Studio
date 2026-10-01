@@ -4,6 +4,12 @@ Invoice Assistant for Copilot Studio
 A reusable, goal-led solution using the new GitHub Copilot harness in Copilot
 Studio: one agent and up to three composable workflows. Version 0.3.0.
 
+Architecture
+------------
+
+.. image:: docs/architecture.png
+   :alt: Invoice Assistant architecture with Copilot Studio, modular workflows, human review, optional Azure tools, Dataverse and customer finance adapters.
+
 Start with the customer's outcome
 --------------------------------
 
@@ -92,7 +98,5 @@ Repository contents
 * ``docs/`` - English solution guide, architecture and official tool images.
 * ``src/`` and ``tests/`` - optional local reference engine.
 
-The local Git repository has no remote or published GitHub URL. Confirm owner,
-visibility and distribution license before publishing. Microsoft icons are
-included only for architecture/documentation under their stated usage terms;
-see ``docs/assets/NOTICE.rst``.
+Microsoft icons are included only for architecture/documentation under their
+stated usage terms; see ``docs/assets/NOTICE.rst``.
